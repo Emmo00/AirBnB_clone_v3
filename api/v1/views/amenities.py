@@ -5,6 +5,7 @@ from api.v1.views import amenity_views
 from models import storage
 from models.amenity import Amenity
 
+
 @amenity_views.route('/amenities', strict_slashes=False)
 def get_amenities():
     ''' Retrives all amenity objects '''
@@ -23,10 +24,10 @@ def get_amenity(amenity_id):
 
 
 @amenity_views.route('/amenities/<amenity_id>', methods=['DELETE'],
-                   strict_slashes=False)
+                     strict_slashes=False)
 def delete_amenity(amenity_id):
     ''' Deletes an amenity '''
-    amenity= storage.get(Amenity, amenity_id)
+    amenity = storage.get(Amenity, amenity_id)
     if not amenity:
         abort(404)
     amenity.delete()
@@ -49,10 +50,11 @@ def post_amenity():
         return jsonify(amenity.to_dict()), 201
 
 
-@amenity_views.route('/amenities/<amenity_id>', methods=['PUT'], strict_slashes=False)
+@amenity_views.route('/amenities/<amenity_id>',
+                     methods=['PUT'], strict_slashes=False)
 def update_amenity(amenity_id):
     ''' Updates an amenity '''
-    amenity= storage.get(Amenity, amenity_id)
+    amenity = storage.get(Amenity, amenity_id)
     if not amenity:
         abort(404)
     try:

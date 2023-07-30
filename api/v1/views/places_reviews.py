@@ -26,7 +26,8 @@ def get_review(review_id):
     return jsonify(review.to_dict())
 
 
-@review_views.route('/reviews/<review_id>', methods=['DELETE'], strict_slashes=False)
+@review_views.route('/reviews/<review_id>',
+                    methods=['DELETE'], strict_slashes=False)
 def delete_review(review_id):
     ''' Deletes a review '''
     review = storage.get(Review, review_id)
@@ -37,7 +38,8 @@ def delete_review(review_id):
     return jsonify({}), 200
 
 
-@review_views.route('/places/<place_id>/reviews', methods=['POST'], strict_slashes=False)
+@review_views.route('/places/<place_id>/reviews',
+                    methods=['POST'], strict_slashes=False)
 def post_review(place_id):
     place = storage.get(Place, place_id)
     if not place:
@@ -56,7 +58,8 @@ def post_review(place_id):
     return jsonify(review.to_dict()), 201
 
 
-@review_views.route('/reviews/<review_id>', methods=['PUT'], strict_slashes=False)
+@review_views.route('/reviews/<review_id>',
+                    methods=['PUT'], strict_slashes=False)
 def update_review(review_id):
     ''' Updates a review '''
     review = storage.get(Review, review_id)
