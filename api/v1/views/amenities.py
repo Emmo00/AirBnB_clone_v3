@@ -15,7 +15,7 @@ def get_amenities():
 
 @amenity_views.route('/amenities/<amenity_id>', strict_slashes=False)
 def get_amenity(amenity_id):
-    ''' Retrieves a amenity object '''
+    ''' Retrieves an amenity object '''
     amenity = storage.get(Amenity, amenity_id)
     if not amenity:
         abort(404)
