@@ -6,7 +6,6 @@ from api.v1.views import app_views
 from api.v1.views import state_views
 from api.v1.views import city_views
 import os
-import json
 
 
 app = Flask('__name__')
@@ -25,7 +24,7 @@ def handler(error):
 @app.errorhandler(404)
 def handler(error):
     ''' Handles 404 error '''
-    return json.dumps({"error": "Not found"}, indent=4), 404
+    return jsonify({"error": "Not found"}), 404
 
 
 @app.errorhandler(400)

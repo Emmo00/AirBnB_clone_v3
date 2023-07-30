@@ -1,12 +1,11 @@
 #!/usr/bin/python3
 ''' This module defines a view for City objects '''
+from flask import request, abort, jsonify
 from api.v1.views import state_views
 from api.v1.views import city_views
 from models import storage
 from models.state import State
 from models.city import City
-from flask import request, abort
-import json
 
 
 @city_views.route('/states/<state_id>/cities', strict_slashes=False)
@@ -16,7 +15,7 @@ def get_cities(state_id):
     if not state:
         abort(404)
     cities = [city.to_dict() for city in state.cities]
-    return json.dumps(cities, indent=4)
+    return jsonify(cities)
 
 
 @city_views.route('/cities/<city_id>')
@@ -25,7 +24,7 @@ def get_city(city_id):
     city = storage.get(City, city_id)
     if not city:
         abort(404)
-    return json.dumps(city.to_dict(), indent=4)
+    return jsonify(city.to_dict())
 
 
 @city_views.route('/cities/<city_id>', methods=['DELETE'],
@@ -38,7 +37,7 @@ def delete_city(city_id):
     city.delete()
     storage.save()
 
-    return json.dumps({}, indent=4), 200
+    return jsonify({}), 200
 
 
 @city_views.route('/states/<state_id>/cities', methods=['POST'],
@@ -54,7 +53,7 @@ def post_city():
             abort(400, description='Missing name')
         city = City(**data)
         city.save()
-        return json.dumps(city.to_dict(), indent=4), 201
+        return jsonify(city.to_dict()), 201
 
 
 @city_views.route('/cities/<city_id>', methods=['PUT'], strict_slashes=False)
@@ -73,4 +72,4 @@ def update_city(city_id):
                 continue
             setattr(city, key, value)
         city.save()
-        return json.dumps(city.to_dict(), indent=4), 200
+        return jsonify(city.to_dict()), 200
