@@ -7,14 +7,13 @@ from models.amenity import Amenity
 from models import storage, storage_t
 
 
-@places_amenities_views.route('/<place_id>/amenities/<amenity_id>',
+@places_amenities_views.route('/<place_id>/amenities',
                               strict_slashes=False)
-def get_amenities_from_place(place_id, amenity_id):
+def get_amenities_from_place(place_id):
     ''' Retrieves the list of Amenity objects of a Place'''
     place = storage.get(Place, place_id)
     if not place:
         abort(404)
-
     amenities = [amenity.to_dict() for amenity in place.amenities]
     return jsonify(amenities)
 
