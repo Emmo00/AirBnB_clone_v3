@@ -31,3 +31,10 @@ class User(BaseModel, Base):
             pwd = bytes(kwargs['password'], 'utf-8')
             kwargs['password'] = md5().update(pwd).hexdigest()
         super().__init__(*args, **kwargs)
+
+    def __setattr__(self, key, value):
+        ''' sets attr's value '''
+        if key == 'password':
+            b_value = bytes(value, 'utf-8')
+            value = md5().update(b_value).hexdigest()
+        super().__setattr__(self, key, value)
