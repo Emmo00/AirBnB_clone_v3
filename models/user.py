@@ -37,4 +37,4 @@ class User(BaseModel, Base):
         if key == 'password':
             b_value = bytes(value, 'utf-8')
             value = md5().update(b_value).hexdigest()
-        super().__setattr__(self, key, value)
+        super().__setattr__(key, value)
