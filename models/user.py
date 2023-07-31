@@ -31,12 +31,16 @@ class User(BaseModel, Base):
         """initializes user"""
         if 'password' in kwargs:
             pwd = bytes(kwargs['password'], 'utf-8')
-            kwargs['password'] = md5().update(pwd).hexdigest()
+            h = md5()
+            h.update(pwd)
+            kwargs['password'] = h.hexdigest()
         super().__init__(*args, **kwargs)
 
     def __setattr__(self, key, value):
         ''' sets attr's value '''
         if key == 'password':
             b_value = bytes(value, 'utf-8')
-            value = md5().update(b_value).hexdigest()
+            h = md5()
+            h.update(b_value)
+            value = h.hexdigest()
         super().__setattr__(key, value)
