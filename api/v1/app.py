@@ -16,7 +16,7 @@ app.register_blueprint(app_views)
 app.register_blueprint(state_views)
 app.register_blueprint(city_views)
 
-CORS(app, resources={r'/*': {'origins': '0.0.0.0'}))
+CORS(app, resources={r'/*': {'origins': '0.0.0.0'}})
 
 
 @app.teardown_appcontext
