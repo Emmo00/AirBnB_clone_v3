@@ -10,6 +10,7 @@ from api.v1.views import amenity_views
 from api.v1.views import user_views
 from api.v1.views import place_views
 from api.v1.views import review_views
+from api.v1.views import places_amenities_views
 import os
 
 
@@ -22,6 +23,7 @@ app.register_blueprint(amenity_views)
 app.register_blueprint(user_views)
 app.register_blueprint(place_views)
 app.register_blueprint(review_views)
+app.register_blueprint(places_amenities_views)
 
 CORS(app, resources={r'/*': {'origins': '0.0.0.0'}})
 
