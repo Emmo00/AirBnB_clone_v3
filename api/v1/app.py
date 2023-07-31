@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 ''' Sets up a Flask '''
 from flask import Flask, jsonify
+from flask_cors import CORS
 from models import storage
 from api.v1.views import app_views
 from api.v1.views import state_views
@@ -15,6 +16,8 @@ app.register_blueprint(app_views)
 app.register_blueprint(state_views)
 app.register_blueprint(city_views)
 
+CORS(app, resources={r'/*': {'origins': '0.0.0.0'}))
+
 
 @app.teardown_appcontext
 def handler(error):
@@ -25,12 +28,12 @@ def handler(error):
 @app.errorhandler(404)
 def handler(error):
     ''' Handles 404 error '''
-    return json.dumps({"error": "Not found"}, indent=4), 404
+    return jsonify({"error": "Not found"}), 404
 
 
 @app.errorhandler(400)
 def handler(error):
-    ''' Handles 404 error '''
+    ''' Handles 400 error '''
     return jsonify(error=str(error)), 400
 
 
