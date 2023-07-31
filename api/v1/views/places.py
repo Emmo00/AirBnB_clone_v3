@@ -4,6 +4,7 @@ from api.v1.views import place_views
 from models import storage
 from models.city import City
 from models.place import Place
+from models.state import State
 from flask import request, abort, jsonify
 
 
@@ -77,3 +78,47 @@ def update_place(place_id):
             setattr(place, key, value)
         place.save()
         return jsonify(place.to_dict()), 200
+
+
+@place_views.route('/places_search', methods=['POST'], strict_slashes=False)
+def places_search():
+    ''' Retrieves all Place objects depending on the data body '''
+    try:
+        data = request.get_json()
+    except Exception:
+        abort(400, description='Not a JSON')
+
+    all_empty = True
+    for list in data.values():
+        if list:
+            all_empty = False
+
+    if all_empty:
+        all_places = list(storage.all(Place).values())
+
+    else:
+        all_cities = []
+        if data.get('states'):
+            for state_id in data['states']:
+                state = storage.get(State, state_id)
+                if state:
+                    for city in state.cities:
+                        all_cities.append(city.id)
+
+        if data.get('cities'):
+            # handle duplicates if any
+            all_cities = set(all_cities + data['cities'])
+
+        all_places = [storage.get(Place, id) for id in all_cities]
+
+        if data.get('amenities'):
+            result = []
+            for amenity_id in data['amenities']:
+                for place in all_places:
+                    for amenity in place.amenities:
+                        if amenity_id == amenity.id:
+                            result.append(place.to_dict())
+
+            return jsonify(result)
+
+    return jsonify([place.to_dict() for place in all_places])
