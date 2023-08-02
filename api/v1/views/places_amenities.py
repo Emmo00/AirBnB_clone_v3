@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 ''' Defines a view for the link btw Place and Amenity objects '''
 from api.v1.views import places_amenities_views
-from flask import jsonify
+from flask import jsonify, abort
 from models.place import Place
 from models.amenity import Amenity
 from models import storage, storage_t
@@ -50,7 +50,7 @@ def delete_amenity_of_place(place_id, amenity_id):
 def link_amenity_to_a_place(place_id, amenity_id):
     ''' Links an Amenity object to a Place object '''
     place = storage.get(Place, place_id)
-    amenity = storage.get(Amenity, amentiy_id)
+    amenity = storage.get(Amenity, amenity_id)
 
     if not place or not amenity:
         abort(404)
@@ -61,7 +61,7 @@ def link_amenity_to_a_place(place_id, amenity_id):
         place.amenities.append(amenity)
     else:
         if amenity.id in place.amenity_ids:
-            return jsonify(amentiy.to_dict()), 200
+            return jsonify(amenity.to_dict()), 200
         place.amenity_ids.append(amenity.id)
 
     place.save()
