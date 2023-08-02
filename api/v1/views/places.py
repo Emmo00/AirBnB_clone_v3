@@ -91,38 +91,25 @@ def places_search():
         data = request.get_json()
     except Exception:
         abort(400, description='Not a JSON')
-
-    all_empty = True
-    for list in data.values():
-        if list:
-            all_empty = False
-
-    if all_empty:
-        all_places = list(storage.all(Place).values())
-
-    else:
-        all_cities = []
-        if data.get('states'):
-            for state_id in data['states']:
-                state = storage.get(State, state_id)
-                if state:
-                    for city in state.cities:
-                        all_cities.append(city.id)
-
-        if data.get('cities'):
-            # handle duplicates if any
-            all_cities = set(all_cities + data['cities'])
-
-        all_places = [storage.get(Place, id) for id in all_cities]
-
-        if data.get('amenities'):
-            result = []
-            for amenity_id in data['amenities']:
-                for place in all_places:
-                    for amenity in place.amenities:
-                        if amenity_id == amenity.id:
-                            result.append(place.to_dict())
-
-            return jsonify(result)
-
+    all_places = list(storage.all(Place).values())
+    city_ids = []
+    if 'cities' in data:
+        city_ids.extend(data['cities'])
+    if 'states' in data:
+        for state_id in data['states']:
+            state = storage.get(State, state_id)
+            if state:
+                city_ids.extend([city.id for city in state.cities])
+    for index, place in reversed(list(enumerate(all_places))):
+        if len(city_ids) > 0 and place.city_id not in city_ids:
+            all_places.pop(index)
+    if 'amenities' in data:
+        for index, place in reversed(list(enumerate(all_places))):
+            has_amenity = False
+            for amenity in place.amenities:
+                if amenity in data['amenities']:
+                    has_amenity = True
+                    break
+            if not has_amenity:
+                all_places.pop(index)
     return jsonify([place.to_dict() for place in all_places])
